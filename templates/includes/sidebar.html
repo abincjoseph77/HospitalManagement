@@ -1,0 +1,80 @@
+{% load static %}
+{% if user.user_type == '1' %}
+<div class="sidebar" id="sidebar" style="background-color: #1E3A8A; color: white; min-height: 100vh;">
+    <div class="sidebar-inner slimscroll">
+       <div id="sidebar-menu" class="sidebar-menu">
+          <ul>
+             <li class="menu-title" style="color: #F8FAFC;">
+                <span>Main Menu</span>
+             </li>
+             
+             <li>
+               <a href="{% url 'admin_home' %}" style="color: white;"><i class="fas fa-file"></i> <span>Dashboard</span></a>
+            </li>
+            <li class="submenu">
+               <a href="#" style="color: white;"><i class="fas fa-file"></i> <span> Specialization</span> <span class="menu-arrow"></span></a>
+               <ul>
+                  <li><a href="{% url 'add_specilizations' %}" style="color: white;">Add</a></li>
+                  <li><a href="{% url 'manage_specilizations' %}" style="color: white;">Manage</a></li>
+               </ul>
+            </li>
+            <li>
+               <a href="{% url 'viewdoctorlist' %}" style="color: white;"><i class="fas fa-users"></i> <span>Doctor List</span></a>
+            </li>
+            <li>
+               <a href="{% url 'search_doctor' %}" style="color: white;"><i class="fas fa-search"></i> <span>Search Doctor</span></a>
+            </li>
+            <li>
+               <a href="{% url 'doctor_between_date_report' %}" style="color: white;"><i class="fa fa-file"></i> <span>Doctor Reg Report</span></a>
+            </li>
+            <li>
+               <a href="{% url 'website_update' %}" style="color: white;"><i class="fas fa-cog"></i> <span>Website Page</span></a>
+            </li>
+            <li>
+               <a href="{% url 'docsignup' %}" style="color: white;"><i class="fas fa-file"></i> <span>Doctor Registration</span></a>
+            </li>
+          </ul>
+       </div>
+    </div>
+</div>
+
+{% else %}
+<div class="sidebar" id="sidebar" style="background-color: #1E3A8A; color: white; min-height: 100vh;">
+   <div class="sidebar-inner slimscroll">
+      <div id="sidebar-menu" class="sidebar-menu">
+         <ul>
+            <li class="menu-title" style="color: #F8FAFC;">
+               <span>Main Menu</span>
+            </li>
+          
+            <li>
+              <a href="{% url 'doctor_home' %}" style="color: white;"><i class="fa fa-file"></i> <span>Dashboard</span></a>
+           </li>
+            <li class="submenu">
+               <a href="#" style="color: white;"><i class="fas fa-chalkboard-teacher"></i> <span> Appointment</span> <span class="menu-arrow"></span></a>
+               <ul>
+                 <li><a href="{% url 'patientnewappointment' %}" style="color: white;">New Appointment</a></li>
+                  <li><a href="{% url 'patientapprovedappointment' %}" style="color: white;">Approved Appointment</a></li>
+                  <li><a href="{% url 'patientcancelledappointment' %}" style="color: white;">Cancelled Appointment</a></li>
+                  <li><a href="{% url 'view_appointment' %}" style="color: white;">All Appointment</a></li>
+               </ul>
+            </li>
+            <li>
+              <a href="{% url 'patientlistappointment' %}" style="color: white;"><i class="fas fa-users"></i> <span>Patient List</span></a>
+           </li>
+           <li>
+              <a href="{% url 'patientappointmentcompleted' %}" style="color: white;"><i class="fas fa-file"></i> <span>Appointment Completed</span></a>
+           </li>
+           <li>
+              <a href="{% url 'between_date_report' %}" style="color: white;"><i class="fa fa-file"></i> <span>B/D Appointment Report</span></a>
+           </li>
+           <li>
+              <a href="{% url 'search_appointment' %}" style="color: white;"><i class="fas fa-search"></i> <span>Search Appointment</span></a>
+           </li>
+         </ul>
+      </div>
+   </div>
+</div>
+
+
+{% endif %}

@@ -1,0 +1,123 @@
+{% extends 'userbase.html' %}
+{% load static %}
+
+{% block content %}
+ <!-- appointment section start -->
+ <div class="appointment_section">
+    <div class="container">
+       <div class="appointment_box">
+          <div class="row">
+             <div class="col-md-12">
+                <h1 class="appointment_taital">Book <span style="color: #0cb7d6;">Appointment</span></h1>
+             </div>
+          </div><form method="POST" action="{% url 'appointment' %}">
+            {% if messages %}
+                        {% for message in messages %}
+                         {% if message.tags == 'error' %}
+                       <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                      {{message}}
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                         </button>
+                          </div>
+                       {% endif %}
+                        {% endfor %}
+                       {% endif %}
+                           {% if messages %}
+                        {% for message in messages %}
+                         {% if message.tags == 'success' %}
+                       <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                      {{message}}
+                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                     <span aria-hidden="true">&times;</span>
+                         </button>
+                          </div>
+                       {% endif %}
+                        {% endfor %}
+                       {% endif %}
+                        {% csrf_token %}
+          <div class="appointment_section_2">
+             <div class="row">
+                <div class="col-md-4">
+                   <p class="doctorname_text">Patient Name</p>
+                   <input type="text" class="email_text" placeholder="Your Name" style="height: 55px;" name="fullname" required="true">
+                </div>
+                <div class="col-md-4">
+                 
+                      <div class="form-group">
+                         <p class="doctorname_text">Doctor's Name</p>
+                         <select class="form-control" name="doctor_id" required="true">
+                            <option>Choose Doctor </option>
+                            {% for doctor in doctorview %}
+                            <option value="{{ doctor.id }}">{{ doctor.admin.first_name }} {{ doctor.admin.last_name }}({{ doctor.specialization_id.sname }})</option>
+                            {% endfor %}
+                           
+                         </select>
+                      </div>
+                   
+                </div>
+                <div class="col-md-4">
+                   <form>
+                      <div class="form-group">
+                         <p class="doctorname_text">Email</p>
+                         <input type="email" class="form-control" placeholder="Your Email" style="height: 55px;" name="email" pattern="[^ @]*@[^ @]*" required="true">
+                      </div>
+                   </form>
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-4">
+                   <p class="doctorname_text">Phone Number</p>
+                 
+                   <input type="text" class="email_text" placeholder="Your Mobile" style="height: 55px;" name="mobilenumber" maxlength="10" required="true">
+                </div>
+                <div class="col-md-4">
+                 
+                      <div class="form-group">
+                         <p class="doctorname_text">Choose Time</p>
+                         <input type="time" class="form-control" placeholder="Choose Time" data-target="#time" data-toggle="datetimepicker" style="height: 55px;" name="time_of_appointment" step="60" required="true">
+                      </div>
+                   
+                </div>
+                <div class="col-md-4">
+                   <p class="doctorname_text">Choose Date</p>
+                   
+                   <input type="date"
+                                        class="form-control"
+                                        placeholder="Choose Date" data-target="#date" data-toggle="datetimepicker" style="height: 55px;" name="date_of_appointment" required="true">
+                </div>
+             </div>
+             <div class="row">
+                <div class="col-md-12">
+                   <p class="doctorname_text">Message</p>
+                 
+                   <textarea class="form-control" rows="5" placeholder="Describe your problem" name="additional_msg"></textarea>
+                </div>
+                <div class="row" style="padding-top: 20px;padding-left: 30px;">
+                <button class="btn btn-primary w-100 py-3" type="submit">Book Appointment</button></div>
+             </div>
+          </div></form>
+       </div>
+    </div>
+ </div>
+ <!-- appointment section end -->
+ <!-- about section start -->
+ <div class="about_section layout_padding" style="padding-bottom: 10px;">
+    <div class="container">
+       <div class="row">
+          <div class="col-md-6">
+             <h1 class="about_taital">About Us</h1>
+             {% for i in page %}
+             <p class="about_text">  {{i.aboutus}}</p>{% endfor %}
+          
+          </div>
+          <div class="col-md-6">
+             <div class="about_img"><img src="{% static 'images/about-img.png'%}"></div>
+          </div>
+       </div>
+    </div>
+ </div>
+ <!-- about section end -->
+ <br>
+
+{% endblock %}

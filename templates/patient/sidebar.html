@@ -1,0 +1,29 @@
+{% load static %}
+{% if user.user_type == '3' %}
+<div class="sidebar" id="sidebar" style="background-color: #1E3A8A; color: white; min-height: 100vh;">
+   <div class="sidebar-inner slimscroll">
+      <div id="sidebar-menu" class="sidebar-menu">
+         <ul>
+            <li class="menu-title" style="color: #F8FAFC;">
+               <span>Main Menu</span>
+            </li>
+          
+            <li>
+              <a href="{% url 'patient_home' %}"  style="color: white;"><i class="fa fa-file"></i> <span>Dashboard</span></a>
+           </li>
+            <li class="submenu">
+               <a href="#" style="color: white;"><i class="fas fa-chalkboard-teacher"></i> <span> Appointment</span> <span class="menu-arrow"></span></a>
+               <ul>
+                 <li><a href="{% url 'newappoinment' %}" style="color: white;">New Appointment</a></li>
+               </ul>
+            </li>
+            <li>
+              <a href="{% url 'Patient_viewdoctorlist' %}" style="color: white;"><i class="fas fa-users"></i> <span>Doctor List</span></a>
+           </li>
+           
+         </ul>
+      </div>
+   </div>
+</div>
+
+{% endif %}

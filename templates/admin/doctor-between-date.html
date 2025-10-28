@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+{% block content %}
+
+
+<div class="content container-fluid">
+
+    <div class="page-header">
+    <div class="row align-items-center">
+    <div class="col">
+    <h3 class="page-title">Reports</h3>
+    <ul class="breadcrumb">
+    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+    <li class="breadcrumb-item active">Between Dates Reports</li>
+    </ul>
+    </div>
+    
+    </div>
+    </div>
+    
+    <div class="row">
+    <div class="col-sm-12">
+      
+                       
+    <div class="card card-table">
+
+    <div class="card-body">
+  
+    <div class="table-responsive">
+        <div class="card-block">
+            <h4 class="sub-title">Between Dates Report</h4>
+            <form method="get" action="" enctype="multipart/form-data" action="{% url 'doctor_between_date_report' %}">
+                {% csrf_token %}
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">From Date</label>
+                    <div class="col-sm-10">
+                        <input type="date" id="query" name="start_date" class="form-control" required="">
+                    </div>
+                </div>
+                 <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">To Date</label>
+                    <div class="col-sm-10">
+                        <input type="date" id="query" name="end_date" class="form-control" required="">
+                    </div>
+                </div>
+
+
+                <div class="form-group row">
+                    <div class="col-sm-10">
+                        <button type="submit" class="btn btn-dark">Submit</button>
+                    </div>
+                </div>
+            </form>
+                    
+                        </div>
+                        {% if start_date and end_date %}
+                        <h5>Showing results from <strong>{{ start_date }}</strong> to <strong>{{ end_date }}</strong></h5>
+                    {% endif %}
+        
+    <table class="table table-hover table-center mb-0 datatable">
+    <thead>
+        {% if doctor %}
+    <tr>
+        
+   
+        <th>S.No</th>
+        <th>Fullname</th>
+        <th>Mobile Number</th>
+        <th>Email</th>
+        <th>Registration Date</th>
+        <th class="text-right">Action</th>
+    </tr>
+    </thead>
+    <tbody>
+        {% for i in doctor %}
+        <tr>
+            <td>{{i.id}}</td>
+            <td>{{i.admin.first_name}} {{i.admin.last_name}}</td>
+            <td>{{i.mobilenumber}}</td>
+            <td>{{i.admin.email}}</td>
+            <td>{{i.regdate_at}}</td>
+            <td class="text-right">
+            <div class="actions">
+            <a href="{% url 'viewdoctordetails' i.id %}" class="btn btn-sm bg-success-light mr-2">
+           View
+            </a>
+            <a href="{% url 'viewdoctorappointmentlist' i.id %}" class="btn btn-sm bg-danger-light">
+            Appointment List
+            </a>
+            </div>
+            </td>
+            </tr> {% endfor %}
+   
+    </tbody>  {% endif %}
+    </table>
+   
+                                      
+    
+                                  
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+{% endblock %}
