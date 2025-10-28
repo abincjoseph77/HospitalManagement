@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     }
     user_type = models.CharField(choices=USER,max_length=50,default=1)
 
-    profile_pic = models.ImageField(upload_to='media/profile_pic')
+    profile_pic = models.ImageField(upload_to='profile_pic')
 
 class Specialization(models.Model):
     sname = models.CharField(max_length=200)
@@ -84,3 +84,14 @@ class Page(models.Model):
     def __str__(self):
         return self.pagetitle
  
+
+
+class Feedback(models.Model):
+    doctor = models.ForeignKey(DoctorReg, on_delete=models.CASCADE, related_name="feedbacks")
+    patient = models.ForeignKey(PatientReg, on_delete=models.CASCADE)
+    rating = models.PositiveIntegerField(default=0)  # 1–5 stars
+    comment = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.patient.admin.first_name} → {self.doctor.admin.first_name} ({self.rating}★)"

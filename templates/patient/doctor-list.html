@@ -1,119 +1,223 @@
-{% extends 'patient/Patientbase.html' %}
-{% block content %}
 
+
+{% extends 'patient/Patientbase.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<style>
+.doctor-card {
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    transition: box-shadow 0.3s ease;
+}
+.doctor-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+.doctor-img-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.doctor-profile-img {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+}
+.verified-badge {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    background: #fff;
+    border-radius: 50%;
+    padding: 2px;
+}
+.verified-badge i {
+    color: #00a8ff;
+    font-size: 24px;
+}
+.doctor-name {
+    color: #00a8ff;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+.doctor-specialty { color: #666; font-size: 16px; font-weight: 500; }
+.doctor-experience, .doctor-location, .doctor-clinic, .doctor-fee {
+    color: #555; font-size: 14px;
+}
+.rating-stars {
+    color: #fbc02d;
+    font-size: 18px;
+}
+.feedback-box {
+    border-top: 1px solid #ddd;
+    margin-top: 15px;
+    padding-top: 10px;
+}
+.feedback-item {
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 10px;
+    background: #fafafa;
+}
+.feedback-item strong {
+    color: #333;
+}
+.feedback-item small {
+    color: #777;
+}
+.toggle-feedback-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+@media (max-width: 768px) {
+    .doctor-profile-img { width: 80px; height: 80px; }
+    .doctor-name { font-size: 18px; }
+}
+</style>
 
 <div class="content container-fluid">
-
     <div class="page-header">
-    <div class="row align-items-center">
-    <div class="col">
-    <h3 class="page-title">Registered Doctor List</h3>
-    <ul class="breadcrumb">
-    <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-    <li class="breadcrumb-item active">Doctor List</li>
-    </ul>
+        <div class="row align-items-center">
+            <div class="col">
+                <h3 class="page-title">Registered Doctor List</h3>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                    <li class="breadcrumb-item active">Doctor List</li>
+                </ul>
+            </div>
+        </div>
     </div>
-   
-    </div>
-    </div>
-    
+
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.tags == 'error' or message.tags == 'success' %}
+                <div class="alert alert-{% if message.tags == 'error' %}warning{% else %}success{% endif %} alert-dismissible fade show" role="alert">
+                    {{message}}
+                    <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
     <div class="row">
-    <div class="col-sm-12">
-    <div class="card card-table">
-    <div class="card-body">
-        {% if messages %}
-        {% for message in messages %}
-         {% if message.tags == 'error' %}
-       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-      {{message}}
-     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-     <span aria-hidden="true">&times;</span>
-         </button>
-          </div>
-       {% endif %}
+        {% for doctor in doctorlist %}
+        <div class="col-12 mb-4">
+            <div class="card doctor-card shadow-sm">
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Doctor Image -->
+                        <div class="col-md-2 text-center">
+                            <div class="doctor-img-wrapper">
+                                {% if doctor.admin.profile_pic %}
+                                    <img src="{{ doctor.admin.profile_pic.url }}" class="doctor-profile-img" alt="Doctor Image">
+                                {% else %}
+                                    <img src="{% static 'assets/img/default-avatar.png' %}" class="doctor-profile-img" alt="No Image">
+                                {% endif %}
+                                <span class="verified-badge"><i class="fas fa-check-circle"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Doctor Details -->
+                        <div class="col-md-7">
+                            <h4 class="doctor-name">{{ doctor.admin.first_name }} {{ doctor.admin.last_name }}</h4>
+                            <p class="doctor-specialty mb-2">{{ doctor.specialization|default:"General Physician" }}</p>
+                            <p class="doctor-experience mb-2"><i class="fas fa-graduation-cap"></i> {{ doctor.experience|default:"5" }} years experience overall</p>
+                            <p class="doctor-location mb-2"><i class="fas fa-map-marker-alt"></i> {{ doctor.address|default:"Kottayam, Kerala" }}</p>
+                            <p class="doctor-clinic mb-2"><i class="fas fa-hospital"></i> {{ doctor.clinic_name|default:"Multi-Specialty Clinic" }}</p>
+                            <p class="doctor-fee mb-2"><i class="fas fa-rupee-sign"></i> {{ doctor.consultation_fee|default:"300" }} Consultation fee</p>
+                            <div class="mt-2">
+                                <span class="badge badge-info"><i class="fas fa-phone"></i> {{ doctor.mobilenumber }}</span>
+                                <td>{{i.mobilenumber}}</td>
+                                <span class="badge badge-secondary ml-2"><i class="fas fa-envelope"></i> {{ doctor.admin.email }}</span>
+                            </div>
+
+                            <!-- ⭐ Rating Section -->
+                            <h5 class="mt-4">⭐ Average Rating:</h5>
+                                {% if doctor.avg_rating %}
+                                <p>{{ doctor.avg_rating|floatformat:1 }} / 5 ({{ doctor.feedback_count }} ratings)</p>
+                                {% else %}
+                                <p>No ratings yet</p>
+                                {% endif %}
+
+                            <!-- 💬 Feedback Section (Hidden by default) -->
+                            <div class="feedback-box">
+                                <button class="btn btn-sm btn-outline-primary toggle-feedback-btn" type="button">
+                                    <i class="fas fa-chevron-down"></i> Show Feedback
+                                </button>
+
+                                <div class="feedback-content mt-2" style="display: none;">
+                                    <h6 class="mb-2">Patient Feedback:</h6>
+                                    {% for fb in doctor.feedbacks.all %}
+                                      <div class="feedback-item">
+                                        <strong>{{ fb.patient.admin.first_name }}:</strong>
+                                        ⭐ {{ fb.rating }} / 5<br>
+                                        {{ fb.comment }}<br>
+                                        <small>{{ fb.created_at|date:"M d, Y" }}</small>
+                                      </div>
+                                    {% empty %}
+                                      <p class="text-muted">No feedback yet.</p>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="col-md-3 text-right d-flex flex-column justify-content-center">
+                            <a href="{% url 'viewSdoctordetails' doctor.id %}" class="btn btn-outline-secondary btn-block">
+                                <i class="fas fa-user"></i> View Profile
+                            </a>
+                            <a href="{% url 'add_feedback' doctor.id %}" class="btn btn-outline-primary btn-block mt-2">
+                                <i class="fas fa-comment-dots"></i> Give Feedback
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         {% endfor %}
-       {% endif %}
-           {% if messages %}
-        {% for message in messages %}
-         {% if message.tags == 'success' %}
-       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-      {{message}}
-     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-     <span aria-hidden="true">&times;</span>
-         </button>
-          </div>
-       {% endif %}
-        {% endfor %}
-       {% endif %}
-    <div class="table-responsive">
-    <table class="table table-hover table-center mb-0 datatable">
-    <thead>
-    <tr>
-    <th>S.No</th>
-    <th>Fullname</th>
-    <th>Mobile Number</th>
-    <th>Email</th>
-    <th>Registration Date</th>
-    <th class="text-right">Profile Pic</th>
-    <th class="text-right">Action</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% for i in doctorlist %}
-    <tr>
-    <td>{{i.id}}</td>
-    <td>{{i.admin.first_name}} {{i.admin.last_name}}</td>
-    <td>{{i.mobilenumber}}</td>
-    <td>{{i.admin.email}}</td>
-    <td>{{i.regdate_at}}</td>
-    <td><img src="{{i.profile_pic.url}}" width="50" height="50"></td>
-    <td class="text-right">
-    <div class="actions">
-    <a href="{% url 'viewdoctordetails' i.id %}" class="btn btn-sm bg-success-light mr-2">
-   View
-    </a>
-    <a href="{% url 'viewdoctorappointmentlist' i.id %}" class="btn btn-sm bg-danger-light">
-    Appointment List
-    </a>
     </div>
-    </td>
-    </tr> {% endfor %}
-   
-    </tbody>
-    </table>
+
+    <!-- Pagination -->
     <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
+        <nav>
             <ul class="pagination">
                 {% if doctorlist.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page=1">&laquo; First</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ doctorlist.previous_page_number }}">Previous</a>
-                    </li>
+                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; First</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ doctorlist.previous_page_number }}">Previous</a></li>
                 {% endif %}
-    
-                <li class="page-item active">
-                    <span class="page-link">Page {{ doctorlist.number }} of {{ doctorlist.paginator.num_pages }}</span>
-                </li>
-    
+                <li class="page-item active"><span class="page-link">Page {{ doctorlist.number }} of {{ doctorlist.paginator.num_pages }}</span></li>
                 {% if doctorlist.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ doctorlist.next_page_number }}">Next</a>
-                    </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ doctorlist.paginator.num_pages }}">Last &raquo;</a>
-                    </li>
+                    <li class="page-item"><a class="page-link" href="?page={{ doctorlist.next_page_number }}">Next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ doctorlist.paginator.num_pages }}">Last &raquo;</a></li>
                 {% endif %}
             </ul>
         </nav>
-    </div> 
     </div>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
+</div>
 
-
+<!-- 🧠 JavaScript for Feedback Toggle -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButtons = document.querySelectorAll('.toggle-feedback-btn');
+    toggleButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+            const content = this.nextElementSibling;
+            
+            if (content.style.display === "none") {
+                content.style.display = "block";
+                this.innerHTML = '<i class="fas fa-chevron-up"></i> Hide Feedback';
+            } else {
+                content.style.display = "none";
+                this.innerHTML = '<i class="fas fa-chevron-down"></i> Show Feedback';
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

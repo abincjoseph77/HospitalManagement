@@ -1,9 +1,11 @@
-from django.shortcuts import render,redirect,HttpResponse
+from django.shortcuts import render,redirect,HttpResponse,get_object_or_404
 from django.contrib.auth.decorators import login_required
 from dasapp.models import DoctorReg,Specialization,CustomUser,Appointment,PatientReg
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from datetime import datetime
+from dasapp.forms import FeedbackForm
+
 
 def Patient_Reg(request):
     if request.method == "POST":
@@ -278,3 +280,30 @@ def Between_Date_Report(request):
         patient = Appointment.objects.filter(created_at__range=(start_date, end_date)) & Appointment.objects.filter(doctor_id=doctor_reg)
 
     return render(request, 'doc/between-dates-report.html', {'patient': patient,'start_date':start_date,'end_date':end_date})
+
+
+
+def add_feedback(request, doctor_id):
+    doctor = get_object_or_404(DoctorReg, id=doctor_id)
+    patient = get_object_or_404(PatientReg, admin=request.user)
+
+    if request.method == 'POST':
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.doctor = doctor
+            feedback.patient = patient
+            feedback.save()
+            messages.success(request, 'Your feedback has been submitted successfully!')
+            return redirect('viewSdoctordetails', id=doctor.id)
+    else:
+        form = FeedbackForm()
+
+    return render(request, 'patient/add_feedback.html', {'form': form, 'doctor': doctor})
+
+
+
+def ViewSDoctorDetails(request,id):
+    doctorlist1=DoctorReg.objects.filter(id=id)
+    context={'doctorlist1':doctorlist1}
+    return render(request,'patient/doctor-details.html',context)

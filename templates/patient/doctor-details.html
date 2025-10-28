@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'patient/Patientbase.html' %}
 {% load static %}
 
 {% block content %}
@@ -80,7 +80,7 @@
                   <td>{{i.regdate_at}}</td>
                 </tr>{% endfor %}
           </table>
-          <div class="btn btn-primary"><a href="{% url 'viewdoctorlist' %}">Back</a></div>
+          <div class="btn btn-primary"><a href="{% url 'Patient_viewdoctorlist' %}">Back</a></div>
     </div>
     </div>
     </div>

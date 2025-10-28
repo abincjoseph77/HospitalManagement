@@ -13,7 +13,7 @@
          <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
             <span class="user-img">
                 {% if user.profile_pic %}
-                    <img class="rounded-circle" src="{{ user.profile_pic.url }}" width="40" height="40" style="object-fit: cover; border-radius: 50%;">
+                    <img class="rounded-circle" src="{{ request.user.profile_pic.url }}" width="40" height="40" style="object-fit: cover; border-radius: 50%;">
                 {% else %}
                     <img class="rounded-circle" src="{% static 'default-user.png' %}" width="40" height="40" style="object-fit: cover; border-radius: 50%;">
                 {% endif %}
@@ -60,7 +60,7 @@
          <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
          <span class="user-img">
              {% if user.profile_pic %}
-                 <img class="rounded-circle" src="{{ user.profile_pic.url }}" width="40" height="40" style="object-fit: cover; border-radius: 50%;">
+                 <img class="rounded-circle" src="{{ request.user.profile_pic.url }}" width="40" height="40" style="object-fit: cover; border-radius: 50%;">
              {% else %}
                  <img class="rounded-circle" src="{% static 'default-user.png' %}" width="40" height="40" style="object-fit: cover; border-radius: 50%;">
              {% endif %}

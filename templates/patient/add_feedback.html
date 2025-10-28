@@ -1,0 +1,27 @@
+{% extends 'patient/Patientbase.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+      <h5 class="mb-0">Give Feedback to Dr. {{ doctor.admin.first_name }} {{ doctor.admin.last_name }}</h5>
+    </div>
+    <div class="card-body">
+      <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="rating">Rating (1–5)</label>
+          {{ form.rating }}
+        </div>
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          {{ form.comment }}
+        </div>
+        <button type="submit" class="btn btn-success">Submit Feedback</button>
+        
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from datetime import datetime, timedelta
 from django.utils.timezone import make_aware
+from django.db.models import Avg
 
 @login_required(login_url='/')
 def ADMINHOME(request):
@@ -72,7 +73,7 @@ def UPDATE_SPECIALIZATION_DETAILS(request):
 
 @login_required(login_url='/')
 def DoctorList(request):
-    doctorlist = DoctorReg.objects.all()
+    doctorlist = DoctorReg.objects.all().order_by('id')
     
     # Pagination: 5 doctors per page
     paginator = Paginator(doctorlist, 5)  
@@ -86,15 +87,21 @@ def DoctorList(request):
 
 @login_required(login_url='/')
 def Doctors_List(request):
-    doctorlist = DoctorReg.objects.all()
-    
-    # Pagination: 5 doctors per page
-    paginator = Paginator(doctorlist, 5)  
-    page_number = request.GET.get('page')  
-    page_obj = paginator.get_page(page_number)  
+    doctorlist = DoctorReg.objects.all().order_by('id')
 
-    context = {'doctorlist': page_obj}  
+    # Add average rating for each doctor
+    for doctor in doctorlist:
+        feedbacks = doctor.feedbacks.all()
+        doctor.avg_rating = feedbacks.aggregate(Avg('rating'))['rating__avg'] or 0
+        doctor.feedback_count = feedbacks.count()
+
+    paginator = Paginator(doctorlist, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    context = {'doctorlist': page_obj}
     return render(request, 'patient/doctor-list.html', context)
+
 
 def ViewDoctorDetails(request,id):
     doctorlist1=DoctorReg.objects.filter(id=id)

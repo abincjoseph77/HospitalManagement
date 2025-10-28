@@ -45,6 +45,8 @@ urlpatterns = [
     path('Patient/DoctorList', adminviews.Doctors_List, name='Patient_viewdoctorlist'),
     
     path('Admin/ViewDoctorDetails/<str:id>', adminviews.ViewDoctorDetails, name='viewdoctordetails'),
+    path('Patient/ViewSDoctorDetails/<str:id>', docviews.ViewSDoctorDetails, name='viewSdoctordetails'),
+    
     path('Admin/ViewDoctorAppointmentList/<str:id>', adminviews.ViewDoctorAppointmentList, name='viewdoctorappointmentlist'),
     path('Admin/ViewPatientDetails/<str:id>', adminviews.ViewPatientDetails, name='viewpatientdetails'),
     path('SearchDoctor', adminviews.Search_Doctor, name='search_doctor'),
@@ -86,5 +88,7 @@ urlpatterns = [
     path('Profile', views.PROFILE, name='profile'),
     path('Profile/update', views.PROFILE_UPDATE, name='profile_update'),
     path('Password', views.CHANGE_PASSWORD, name='change_password'),
+    
+    path('doctor/<int:doctor_id>/feedback/', docviews.add_feedback, name='add_feedback'),
     
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
