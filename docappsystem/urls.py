@@ -90,5 +90,7 @@ urlpatterns = [
     path('Password', views.CHANGE_PASSWORD, name='change_password'),
     
     path('doctor/<int:doctor_id>/feedback/', docviews.add_feedback, name='add_feedback'),
+
+    
     
 ]+ static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

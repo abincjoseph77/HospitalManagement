@@ -1,9 +1,11 @@
 from django.shortcuts import render,redirect,HttpResponse
-from dasapp.models import DoctorReg,Specialization,CustomUser,Appointment,Page
+from dasapp.models import DoctorReg,Specialization,CustomUser,Appointment,Page,PatientReg
 import random
 from datetime import datetime
 from django.contrib import messages
 from django.core.mail import send_mail
+from django.db.models import Count
+
 
 def USERBASE(request):
     
@@ -12,10 +14,26 @@ def USERBASE(request):
 def Index(request):
     doctorview = DoctorReg.objects.all()
     page = Page.objects.all()
+    
+    specialization_counts = (
+        Specialization.objects
+        .annotate(doctor_count=Count('doctorreg'))
+        .values('sname', 'doctor_count')
+    )
+    
+    total_doctors = DoctorReg.objects.count()
+    total_patients = PatientReg.objects.count()
+    total_appointments = Appointment.objects.count()
 
-    context = {'doctorview': doctorview,
+    context = {
+    'doctorview': doctorview,
     'page':page,
+    'total_doctors': total_doctors,
+    'total_patients': total_patients,
+    'total_appointments': total_appointments,
+    'specialization_counts': specialization_counts, 
     }
+    
     return render(request, 'index.html',context)
 
 
@@ -24,7 +42,8 @@ def newappoinment(request):
     doctorview = DoctorReg.objects.all()
     page = Page.objects.all()
 
-    context = {'doctorview': doctorview,
+    context = {
+        'doctorview': doctorview,
     'page':page,
     }
     return render(request, 'patient/newappoinment.html',context)

@@ -1,84 +1,72 @@
 {% load static %}
 <!-- Footer Start -->
-
 <div class="footer_section">
     <div class="container">
-      
-       <div class="footer_section_2">
-          <div class="row">
-             <div class="col-lg-4 col-sm-6">
-                <h3 class="footer_taital">Address</h3>
-                <div class="location_main">
-                    {% for i in page %}
-                   <ul>
-                      <li>
-                         <a href="#"><i class="fa fa-map-marker" aria-hidden="true"></i>
-                         <span class="padding_15">Address: {{i.address}}</span></a>
-                      </li>
-                      <li>
-                         <a href="#"><i class="fa fa-phone" aria-hidden="true"></i>
-                         <span class="padding_15">Call : +{{i.mobilenumber}}</span></a>
-                      </li>
-                      <li>
-                         <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i>
-                         <span class="padding_15">Email : {{i.email}}</span></a>
-                      </li>
-                   </ul>
+        <div class="footer_section_2">
+            <div class="row">
+                <!-- Address -->
+                <div class="col-lg-3 col-sm-6">
+                    <h3 class="footer_taital">Address</h3>
+                    <div class="location_main">
+                        {% for i in page %}
+                        <ul>
+                            <li>
+                                <a href="#"><i class="fa fa-map-marker" aria-hidden="true"></i>
+                                <span class="padding_15">Address: {{i.address}}</span></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-phone" aria-hidden="true"></i>
+                                <span class="padding_15">Call : +{{i.mobilenumber}}</span></a>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-envelope" aria-hidden="true"></i>
+                                <span class="padding_15">Email : {{i.email}}</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                  
                 </div>
-                <div class="footer_social_icon">
-                   <ul>
-                      <li>
-                         <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                      </li>
-                      <li>
-                         <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                      </li>
-                      <li>
-                         <a href="#"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-                      </li>
-                      <li>
-                         <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                      </li>
-                   </ul>
+
+                <!-- Useful Link -->
+                <div class="col-lg-3 col-sm-6">
+                    <h3 class="footer_taital">Useful Link</h3>
+                    <div class="footer_menu">
+                        <ul>
+                            <li class="active"><a href="{% url 'index' %}">Home</a></li>
+                            <li><a href="{% url 'login' %}">Admin</a></li>
+                            <li><a href="{% url 'docsignup' %}">Doctor Reg</a></li>
+                            <li><a href="{% url 'login' %}">Doctor Login</a></li>
+                            <li><a href="treatment.html">Search Appointment</a></li>
+                        </ul>
+                    </div>
                 </div>
-             </div>
-             <div class="col-lg-4 col-sm-6">
-                <h3 class="footer_taital">Useful Link</h3>
-                <div class="footer_menu">
-                   <ul>
-                      <li class="active">
-                         <a href="{% url 'index' %}">Home</a>
-                      </li>
-                      <li>
-                         <a href="{% url 'login' %}">Admin</a>
-                      </li>
-                      <li>
-                         <a href="{% url 'docsignup' %}">Doctor Reg</a>
-                      </li>
-                      <li>
-                         <a href="{% url 'login' %}">Doctor Login</a>
-                      </li>
-                      <li>
-                         <a href="treatment.html">Search Appointment</a>
-                      </li>
-                     
-                   </ul>
+
+                <!-- About Us -->
+                <div class="col-lg-3 col-sm-6">
+                    <h3 class="footer_taital">About Us</h3>
+                    <p class="ipsum_text">{{i.aboutus}}</p>
+                    {% endfor %}
                 </div>
-             </div>
-             <div class="col-lg-4 col-sm-6">
-                <h3 class="footer_taital">About Us</h3>
-              
-                <p class="ipsum_text">{{i.aboutus}}</p>{% endfor %}
-             </div>
-          
-          </div>
-       </div>
-    </div>
- </div>
-       <!-- copyright section start -->
-       <div class="copyright_section">
-        <div class="container">
-           <p class="copyright_text">Doctor Appointment System</p>
+
+                <!-- Map Section -->
+                <div class="col-lg-3 col-sm-6">
+                    <h3 class="footer_taital">Our Location</h3>
+                    <div class="map_container" style="border-radius: 10px; overflow: hidden;">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.995309827157!2d77.21772167549864!3d28.613939075675467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2d8a7e1b1ef%3A0x77eafc7e47413e26!2sNew%20Delhi%2C%20Delhi%2C%20India!5e0!3m2!1sen!2sin!4v1697810921123!5m2!1sen!2sin" 
+                            width="100%" height="200" style="border:0;" allowfullscreen="" loading="lazy">
+                        </iframe>
+                    </div>
+                </div>
+            </div>
         </div>
-     </div>
-     <!-- copyright section end -->
+    </div>
+</div>
+
+<!-- copyright section start -->
+<div class="copyright_section">
+    <div class="container">
+        <p class="copyright_text">Doctor Appointment System</p>
+    </div>
+</div>
+<!-- copyright section end -->

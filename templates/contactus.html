@@ -1,0 +1,148 @@
+{% extends 'userbase.html' %}
+{% load static %}
+
+{% block content %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Doctor Appointment System</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .about-section {
+            padding: 80px 0;
+            text-align: center;
+        }
+        .about-section h2 {
+            font-size: 36px;
+            color: #0dcaf0;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .about-section p {
+            font-size: 17px;
+            line-height: 1.7;
+            color: #555;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .mission-section {
+            background-color: #fff;
+            padding: 60px 0;
+            text-align: center;
+        }
+        .mission-section h3 {
+            font-size: 28px;
+            color: #0dcaf0;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .mission-section p {
+            font-size: 16px;
+            color: #666;
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        .team-section {
+            padding: 60px 0;
+            background-color: #f1f1f1;
+            text-align: center;
+        }
+        .team-section h3 {
+            font-size: 28px;
+            color: #0dcaf0;
+            margin-bottom: 30px;
+        }
+        .team-members {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 25px;
+        }
+        .member-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            width: 260px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: 0.3s;
+        }
+        .member-card:hover {
+            transform: translateY(-5px);
+        }
+        .member-card img {
+            width: 100%;
+            border-radius: 50%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .member-card h4 {
+            margin-top: 15px;
+            font-size: 20px;
+            color: #333;
+        }
+        .member-card p {
+            color: #777;
+            font-size: 15px;
+        }
+        .map-container {
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- About Section -->
+    <section class="about-section">
+        {% for i in page %}
+        <h2>About Our Clinic</h2>
+        <p>{{ i.aboutus }}</p>
+        {% endfor %}
+    </section>
+
+    <!-- Mission Section -->
+    <section class="mission-section">
+        <h3>Our Mission</h3>
+        <p>To provide accessible, quality healthcare with compassion and innovation. We aim to make doctor appointments seamless for patients and empower medical professionals with the tools they need to serve better.</p>
+    </section>
+
+    <!-- Team Section -->
+    <section class="team-section">
+        <h3>Meet Our Team</h3>
+        <div class="team-members">
+            <div class="member-card">
+                <img src="{% static 'images/doctor1.jpg' %}" alt="Doctor 1">
+                <h4>Dr. John Mathew</h4>
+                <p>Cardiologist</p>
+            </div>
+            <div class="member-card">
+                <img src="{% static 'images/doctor2.jpg' %}" alt="Doctor 2">
+                <h4>Dr. Sneha Thomas</h4>
+                <p>Dermatologist</p>
+            </div>
+            <div class="member-card">
+                <img src="{% static 'images/doctor3.jpg' %}" alt="Doctor 3">
+                <h4>Dr. Rajesh Kumar</h4>
+                <p>Orthopedic Surgeon</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <div class="map-container">
+        <iframe 
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.995309827157!2d77.21772167549864!3d28.613939075675467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2d8a7e1b1ef%3A0x77eafc7e47413e26!2sNew%20Delhi%2C%20Delhi%2C%20India!5e0!3m2!1sen!2sin!4v1697810921123!5m2!1sen!2sin"
+            width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+    </div>
+
+</body>
+</html>
+{% endblock content %}

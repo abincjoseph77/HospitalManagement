@@ -106,3 +106,4 @@ def CHANGE_PASSWORD(request):
           messages.success(request,'Current Password wrong!!!')
           return redirect("change_password")
      return render(request,'change-password.html')
+ 

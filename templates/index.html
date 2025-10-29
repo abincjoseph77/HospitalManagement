@@ -2,122 +2,660 @@
 {% load static %}
 
 {% block content %}
- <!-- appointment section start -->
- <div class="appointment_section">
-    <div class="container">
-       <div class="appointment_box">
-          <div class="row">
-             <div class="col-md-12">
-                <h1 class="appointment_taital">Book <span style="color: #0cb7d6;">Appointment</span></h1>
-             </div>
-          </div><form method="POST" action="{% url 'appointment' %}">
-            {% if messages %}
-                        {% for message in messages %}
-                         {% if message.tags == 'error' %}
-                       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                      {{message}}
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                         </button>
-                          </div>
-                       {% endif %}
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediCare - Hospital Management Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2c7be5;
+            --primary-dark: #1a68d1;
+            --secondary: #00d97e;
+            --accent: #6e51e0;
+            --light: #f9fafc;
+            --dark: #283e59;
+            --gray: #95aac9;
+            --danger: #e63757;
+            --warning: #f6c343;
+            --success: #00d97e;
+            --border-radius: 12px;
+            --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4ecfb 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header Styles */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo i {
+            color: var(--primary);
+            font-size: 2.2rem;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--dark);
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .header-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .date-display {
+            color: var(--gray);
+            font-weight: 500;
+            background: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .stat-icon.patients {
+            background: var(--primary);
+        }
+
+        .stat-icon.doctors {
+            background: var(--secondary);
+        }
+
+        .stat-icon.appointments {
+            background: var(--accent);
+        }
+
+        .stat-info h3 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .positive {
+            color: var(--success);
+        }
+
+        .negative {
+            color: var(--danger);
+        }
+
+        /* Main Dashboard Layout */
+        .dashboard-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Charts and Widgets */
+        .chart-container, .widget {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .chart-header, .widget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-header h3, .widget-header h3 {
+            font-size: 1.2rem;
+            color: var(--dark);
+        }
+
+        .chart-actions, .widget-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--light);
+            color: var(--dark);
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .btn:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1.5rem 1rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            color: white;
+            background: var(--primary);
+        }
+
+        .action-btn h4 {
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+
+        /* Recent Activity */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            background: var(--primary);
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-details h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .activity-details p {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .activity-time {
+            font-size: 0.7rem;
+            color: var(--gray);
+        }
+
+        /* Department Status */
+        .department-status {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .department-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: var(--light);
+            border-radius: var(--border-radius);
+        }
+
+        .department-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .department-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: white;
+            background: var(--accent);
+        }
+
+        .department-details h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .department-details p {
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+
+        .department-status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .status-available {
+            background: var(--success);
+        }
+
+        .status-busy {
+            background: var(--warning);
+        }
+
+        .status-full {
+            background: var(--danger);
+        }
+
+        /* Emergency Alerts */
+        .emergency-alert {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+            color: white;
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .emergency-icon {
+            font-size: 2rem;
+        }
+
+        .emergency-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .emergency-content p {
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .header-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stats-overview {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+   
+    <div class="dashboard-container">
+        <!-- Dashboard Header -->
+        
+
+        <!-- Emergency Alert -->
+        <div class="emergency-alert">
+            <div class="emergency-icon">
+                <i class="fas fa-exclamation-triangle"></i>
+            </div>
+            <div class="emergency-content">
+                <h3>Emergency Department at Capacity</h3>
+                <p>Consider redirecting non-critical patients to nearby facilities.</p>
+                <button class="btn btn-primary">Contact</button>
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-overview">
+            <div class="stat-card">
+                <div class="stat-icon patients">
+                    <i class="fas fa-user-injured"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_patients }}</h3>
+                    <p>Total Patients</p>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 5.2% from last month
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon doctors">
+                    <i class="fas fa-user-md"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_doctors }}</h3>
+                    <p>Medical Staff</p>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> 2 new hires
+                    </div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon appointments">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>{{ total_appointments }}</h3>
+                    <p>Today's Appointments</p>
+                    <div class="stat-change negative">
+                        <i class="fas fa-arrow-down"></i> 3 cancellations
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-content">
+            <div class="main-content">
+                <!-- Department Status -->
+                <div class="chart-container">
+                    <div class="chart-header">
+                        <h3>Department Status</h3>
+                        <div class="chart-actions">
+                            <button class="btn btn-primary">Refresh</button>
+                        </div>
+                    </div>
+                    <div class="department-status">
+                        {% for s in specialization_counts %}
+                        <div class="department-item">
+                            <div class="department-info">
+                                <div class="department-icon">
+                                    <i class="fas fa-heartbeat"></i>
+                                </div>
+                                <div class="department-details">
+                                    <h4>{{ s.sname }}: {{ s.doctor_count }}</h4>
+                                    <p>12 patients, 5 available beds</p>
+                                </div>
+                            </div>
+                            <div class="department-status-indicator">
+                                <div class="status-dot status-available"></div>
+                                <span>Available</span>
+                            </div>
+                        </div>
                         {% endfor %}
-                       {% endif %}
-                           {% if messages %}
-                        {% for message in messages %}
-                         {% if message.tags == 'success' %}
-                       <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                      {{message}}
-                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                     <span aria-hidden="true">&times;</span>
-                         </button>
-                          </div>
-                       {% endif %}
-                        {% endfor %}
-                       {% endif %}
-                        {% csrf_token %}
-          <div class="appointment_section_2">
-             <div class="row">
-                <div class="col-md-4">
-                   <p class="doctorname_text">Patient Name</p>
-                   <input type="text" class="email_text" placeholder="Your Name" style="height: 55px;" name="fullname" required="true">
+                    </div>
                 </div>
-                <div class="col-md-4">
-                 
-                      <div class="form-group">
-                         <p class="doctorname_text">Doctor's Name</p>
-                         <select class="form-control" name="doctor_id" required="true">
-                            <option>Choose Doctor </option>
-                            {% for doctor in doctorview %}
-                            <option value="{{ doctor.id }}">{{ doctor.admin.first_name }} {{ doctor.admin.last_name }}({{ doctor.specialization_id.sname }})</option>
-                            {% endfor %}
-                           
-                         </select>
-                      </div>
-                   
+            </div>
+
+            <div class="sidebar">
+                <!-- Quick Actions -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Quick Actions</h3>
+                    </div>
+
+                    <div class="quick-actions">
+                        <div class="action-btn">
+                            <div class="action-icon">
+                                <a href=" {% url 'PatientReg' %}" class="fas fa-user-plus"></a>
+                            </div>
+                            <h4>Add Patient</h4>
+                        </div>
+                        <div class="action-btn">
+                            <div class="action-icon">
+                                
+                                <a href=" {% url 'login' %}" class="fas fa-calendar-plus"></a>
+                            </div>
+                            <h4>Schedule Appointment</h4>
+                        </div>
+                        
+                        
+                    </div>
                 </div>
-                <div class="col-md-4">
-                   <form>
-                      <div class="form-group">
-                         <p class="doctorname_text">Email</p>
-                         <input type="email" class="form-control" placeholder="Your Email" style="height: 55px;" name="email" pattern="[^ @]*@[^ @]*" required="true">
-                      </div>
-                   </form>
+
+                <!-- Recent Activity -->
+                <div class="widget">
+                    <div class="widget-header">
+                        <h3>Recent Activity</h3>
+                        <div class="widget-actions">
+                            <button class="btn">View All</button>
+                        </div>
+                    </div>
+                    <div class="activity-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                
+                                <a href=" {% url 'PatientReg' %}" class="fas fa-user-injured"></a>
+                            </div>
+                            <div class="activity-details">
+                                <h4>New Patient Registration</h4>
+                                <p>John Doe registered in Cardiology</p>
+                            </div>
+                            <div class="activity-time">10 min ago</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <a href=" {% url 'login' %}" class="fas fa-prescription"></a>
+                            </div>
+                            <div class="activity-details">
+                                <h4>Prescription Filled</h4>
+                                <p>Medication dispensed for Sarah Johnson</p>
+                            </div>
+                            <div class="activity-time">25 min ago</div>
+                        </div>
+                       
+                        
+                    </div>
                 </div>
-             </div>
-             <div class="row">
-                <div class="col-md-4">
-                   <p class="doctorname_text">Phone Number</p>
-                 
-                   <input type="text" class="email_text" placeholder="Your Mobile" style="height: 55px;" name="mobilenumber" maxlength="10" required="true">
+
+                <!-- Staff Availability -->
+                
                 </div>
-                <div class="col-md-4">
-                 
-                      <div class="form-group">
-                         <p class="doctorname_text">Choose Time</p>
-                         <input type="time" class="form-control" placeholder="Choose Time" data-target="#time" data-toggle="datetimepicker" style="height: 55px;" name="time_of_appointment" step="60" required="true">
-                      </div>
-                   
-                </div>
-                <div class="col-md-4">
-                   <p class="doctorname_text">Choose Date</p>
-                   
-                   <input type="date"
-                                        class="form-control"
-                                        placeholder="Choose Date" data-target="#date" data-toggle="datetimepicker" style="height: 55px;" name="date_of_appointment" required="true">
-                </div>
-             </div>
-             <div class="row">
-                <div class="col-md-12">
-                   <p class="doctorname_text">Message</p>
-                 
-                   <textarea class="form-control" rows="5" placeholder="Describe your problem" name="additional_msg"></textarea>
-                </div>
-                <div class="row" style="padding-top: 20px;padding-left: 30px;">
-                <button class="btn btn-primary w-100 py-3" type="submit">Book Appointment</button></div>
-             </div>
-          </div></form>
-       </div>
+            </div>
+        </div>
     </div>
- </div>
- <!-- appointment section end -->
- <!-- about section start -->
- <div class="about_section layout_padding" style="padding-bottom: 10px;">
-    <div class="container">
-       <div class="row">
-          <div class="col-md-6">
-             <h1 class="about_taital">About Us</h1>
-             {% for i in page %}
-             <p class="about_text">  {{i.aboutus}}</p>{% endfor %}
-          
-          </div>
-          <div class="col-md-6">
-             <div class="about_img"><img src="{% static 'images/about-img.png'%}"></div>
-          </div>
-       </div>
-    </div>
- </div>
- <!-- about section end -->
- <br>
+
+    <script>
+        // Set current date
+        const currentDateElement = document.getElementById('current-date');
+        const currentDate = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        currentDateElement.textContent = currentDate.toLocaleDateString('en-US', options);
+
+        // Quick action buttons functionality
+        document.querySelectorAll('.action-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const action = this.querySelector('h4').textContent;
+                alert(`Action: ${action} - This would open the relevant module in a real application.`);
+            });
+        });
+
+        // Department status items click
+        document.querySelectorAll('.department-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const deptName = this.querySelector('h4').textContent;
+                alert(`Viewing details for ${deptName} department`);
+            });
+        });
+    </script>
+</body>
+</html>
 
 {% endblock %}

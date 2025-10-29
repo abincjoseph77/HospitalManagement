@@ -307,3 +307,6 @@ def ViewSDoctorDetails(request,id):
     doctorlist1=DoctorReg.objects.filter(id=id)
     context={'doctorlist1':doctorlist1}
     return render(request,'patient/doctor-details.html',context)
+
+
+
